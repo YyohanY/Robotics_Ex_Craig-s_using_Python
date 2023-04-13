@@ -2,7 +2,9 @@
 
 import matplotlib.pyplot as plt
 import drawRobotics as dR
+import PUMA560_DHNot_n_Matrix as DH
 import numpy as np
+import sympy as sp
 from matplotlib.widgets import Slider
 
 axcolor = 'lightgoldenrodyellow'
@@ -17,29 +19,23 @@ d3 = 0.5
 d4 = 1.5
 
 # Base Link's origin
-ORG_Base = np.array( [1, 0, 0, 0],
-                     [0, 1, 0, 0],
-                     [0, 0, 1, -2],
-                     [0, 0, 0, 1] )
+ORG_Base = np.array([[1,0,0,0], [0,1,0,0], [0,0,1,-2], [0,0,0,1]])
 
 # Origin's origin
-ORG_0 = np.array( [1, 0, 0, 0],
-                  [0, 1, 0, 0],
-                  [0, 0, 1, 0],
-                  [0, 0, 0, 1] )
+ORG_0 = np.array([[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]])
 
 # Rotation Matrix : z-axis
 def RotZ(a):
-    return np.array( [  [np.cos(a), -np.sin(a), 0, 0], 
-                        [np.sin(a), np.cos(a), 0, 0], 
+    return np.array( [  [sp.cos(a), -sp.sin(a), 0, 0], # "np.cos" -> "sp.cos"
+                        [sp.sin(a), sp.cos(a), 0, 0], 
                         [0, 0, 1, 0],
                         [0, 0, 0, 1] ] )
 
 # Rotation Matrix : x-axis
 def RotX(a):
     return np.array( [  [1, 0, 0, 0], 
-                        [0, np.cos(a), -np.sin(a), 0],
-                        [0, np.sin(a), np.cos(a), 0],
+                        [0, sp.cos(a), -sp.sin(a), 0],  # "np.cos" -> "sp.cos"
+                        [0, sp.sin(a), sp.cos(a), 0],
                         [0, 0, 0, 1] ] )
 
 # Translation 3-D, dq1~3 : Link Offset
@@ -51,31 +47,26 @@ def D_q(dq1,dq2,dq3):
 
 # Calculate coordinate transformation
 def calcORGs(q1, q2, q3, q4, q5, q6):
-    
-    # Degree to Radian
-    th1 = dR.conv2Rad(q1)
-    th2 = dR.conv2Rad(q2)
-    th3 = dR.conv2Rad(q3)
-    th4 = dR.conv2Rad(q4)
-    th5 = dR.conv2Rad(q5)
-    th6 = dR.conv2Rad(q6)
+    th1 = DH.conv2Rad(q1)  # "dR.conv2Rad()"" -> "DH.conv2Rad()""
+    th2 = DH.conv2Rad(q2)
+    th3 = DH.conv2Rad(q3)
+    th4 = DH.conv2Rad(q4)
+    th5 = DH.conv2Rad(q5)
+    th6 = DH.conv2Rad(q6)
 
-    # Calculate : Rotation&Translation Matrix
     Trans_0to1 = RotZ(th1)
-    Trans_1to2 = np.dot(RotX(dR.conv2Rad(-90)), RotZ(th2))
+    Trans_1to2 = np.dot(RotX(DH.conv2Rad(-90)), RotZ(th2))
     Trans_2to3 = np.dot(np.dot(D_q(a2,0,0), D_q(0,0,d3)), RotZ(th3))
-    Trans_3to4 = np.dot(np.dot(np.dot(RotX(dR.conv2Rad(-90)), D_q(a3,0,0)), D_q(0,0,d4)), RotZ(th4))
-    Trans_4to5 = np.dot(RotX(dR.conv2Rad(90)), RotZ(th5))
-    Trans_5to6 = np.dot(RotX(dR.conv2Rad(-90)), RotZ(th6))
+    Trans_3to4 = np.dot(np.dot(np.dot(RotX(DH.conv2Rad(-90)), D_q(a3,0,0)), D_q(0,0,d4)), RotZ(th4))
+    Trans_4to5 = np.dot(RotX(DH.conv2Rad(90)), RotZ(th5))
+    Trans_5to6 = np.dot(RotX(DH.conv2Rad(-90)), RotZ(th6))
 
-    # to find Trans_0to6
     Trans_0to2 = np.dot(Trans_0to1, Trans_1to2)
     Trans_0to3 = np.dot(Trans_0to2, Trans_2to3)
     Trans_0to4 = np.dot(Trans_0to3, Trans_3to4)
     Trans_0to5 = np.dot(Trans_0to4, Trans_4to5)
     Trans_0to6 = np.dot(Trans_0to5, Trans_5to6)
 
-    # to locate joint point
     ORG_1 = np.dot(Trans_0to1, ORG_0)
     ORG_2 = np.dot(Trans_0to2, ORG_0)
     ORG_3 = np.dot(Trans_0to3, ORG_0)
@@ -85,7 +76,7 @@ def calcORGs(q1, q2, q3, q4, q5, q6):
 
     return ORG_1, ORG_2, ORG_3, ORG_4, ORG_5, ORG_6
 
-def drawObject(ORG_1, ORG_2, ORG_3, ORG_4, ORG_5, ORG_6, ORG_7, ORG_8):
+def drawObject(ORG_1, ORG_2, ORG_3, ORG_4, ORG_5, ORG_6):
     dR.drawPointWithAxis(ax, ORG_0, lineStyle='--', vectorLength=1, lineWidth=2)
     dR.drawPointWithAxis(ax, ORG_1, vectorLength=0.5)
     dR.drawPointWithAxis(ax, ORG_2, vectorLength=0.5)
@@ -93,8 +84,6 @@ def drawObject(ORG_1, ORG_2, ORG_3, ORG_4, ORG_5, ORG_6, ORG_7, ORG_8):
     dR.drawPointWithAxis(ax, ORG_4, vectorLength=0.5)
     dR.drawPointWithAxis(ax, ORG_5, vectorLength=0.5)
     dR.drawPointWithAxis(ax, ORG_6, vectorLength=0.5)
-    dR.drawPointWithAxis(ax, ORG_7, vectorLength=0.5)
-    dR.drawPointWithAxis(ax, ORG_8, vectorLength=0.5)
 
     dR.drawVector(ax, ORG_Base, ORG_0, arrowstyle='-', lineColor='c', proj=False, lineWidth=5)
     dR.drawVector(ax, ORG_0, ORG_1, arrowstyle='-', lineColor='k', proj=False, lineWidth=3)
@@ -103,8 +92,6 @@ def drawObject(ORG_1, ORG_2, ORG_3, ORG_4, ORG_5, ORG_6, ORG_7, ORG_8):
     dR.drawVector(ax, ORG_3, ORG_4, arrowstyle='-', lineColor='k', proj=False, lineWidth=3)
     dR.drawVector(ax, ORG_4, ORG_5, arrowstyle='-', lineColor='k', proj=False, lineWidth=3)
     dR.drawVector(ax, ORG_5, ORG_6, arrowstyle='-', lineColor='k', proj=False, lineWidth=3)
-    dR.drawVector(ax, ORG_6, ORG_7, arrowstyle='-', lineColor='k', proj=False, lineWidth=3)
-    dR.drawVector(ax, ORG_7, ORG_8, arrowstyle='-', lineColor='k', proj=False, lineWidth=3)
 
     ax.set_xlim([-2,3]), ax.set_ylim([-2,3]), ax.set_zlim([-2,2])
     ax.set_xlabel('X axis'), ax.set_ylabel('Y axis'), ax.set_zlabel('Z axis')
@@ -117,13 +104,13 @@ def update(val):
     th5 = s5Angle.val
     th6 = s6Angle.val
 
-    ORG_1, ORG_2, ORG_3, ORG_4, ORG_5, ORG_6, ORG_7, ORG_8 = calcORGs(th1, th2, th3, th4, th5, th6)
+    ORG_1, ORG_2, ORG_3, ORG_4, ORG_5, ORG_6 = calcORGs(th1, th2, th3, th4, th5, th6)
 
     ax.cla()
 
-    drawObject(ORG_1, ORG_2, ORG_3, ORG_4, ORG_5, ORG_6, ORG_7, ORG_8)
+    drawObject(ORG_1, ORG_2, ORG_3, ORG_4, ORG_5, ORG_6)
     
-ORG_1, ORG_2, ORG_3, ORG_4, ORG_5, ORG_6, ORG_7, ORG_8 = calcORGs(th1Init, th2Init, th3Init, th4Init, th5Init, th6Init)
+ORG_1, ORG_2, ORG_3, ORG_4, ORG_5, ORG_6 = calcORGs(th1Init, th2Init, th3Init, th4Init, th5Init, th6Init)
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
@@ -143,7 +130,7 @@ s4Angle = Slider(th4Angle, r'$ \theta_4 $', -180.0, 180.0, valinit=th4Init)
 s5Angle = Slider(th5Angle, r'$ \theta_5 $', -180.0, 180.0, valinit=th5Init)
 s6Angle = Slider(th6Angle, r'$ \theta_6 $', -180.0, 180.0, valinit=th6Init)
 
-drawObject(ORG_1, ORG_2, ORG_3, ORG_4, ORG_5, ORG_6, ORG_7, ORG_8)
+drawObject(ORG_1, ORG_2, ORG_3, ORG_4, ORG_5, ORG_6)
 
 s1Angle.on_changed(update)
 s2Angle.on_changed(update)

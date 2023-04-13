@@ -4,15 +4,15 @@ import sympy as sp
 
 conv2Rad = lambda x : x*sp.pi/180  # Degree to Radian
 
-theta1 = sp.Symbol('theta1')  # Set symbols
-theta2 = sp.Symbol('theta2')
-theta3 = sp.Symbol('theta3')
-theta4 = sp.Symbol('theta4')
-theta5 = sp.Symbol('theta5')
-theta6 = sp.Symbol('theta6')
+theta1 = sp.symbols('theta1')  # Set symbols
+theta2 = sp.symbols('theta2')
+theta3 = sp.symbols('theta3')
+theta4 = sp.symbols('theta4')
+theta5 = sp.symbols('theta5')
+theta6 = sp.symbols('theta6')
 
 # a2, a3 : Link Length (between two joint axes)
-a2, a3 = sp.Symbol('a2 a3')  
+a2, a3 = sp.symbols('a2 a3')  
 
 # d3, d4 : Link Offset (distance from the origins of Frame in direction of z-axis)
 d3, d4 = sp.symbols('d3 d4')  

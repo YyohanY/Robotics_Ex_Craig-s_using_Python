@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from PUMA560.Arrow3D import *
+import sympy as sp
 
 conv2Rad = lambda x : x*np.pi/180
+conv2Rad = lambda x : x*sp.pi/180  # Degree to Radian
 
 def drawVector(fig, pointA, pointB, **kwargs):
 	ms = kwargs.get('mutation_scale', 20)
