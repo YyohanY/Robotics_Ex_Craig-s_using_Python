@@ -11,8 +11,11 @@ theta4 = sp.Symbol('theta4')
 theta5 = sp.Symbol('theta5')
 theta6 = sp.Symbol('theta6')
 
-a2, a3 = sp.Symbol('a2 a3')
-d3, d4 = sp.symbols('d3 d4')
+# a2, a3 : Link Length (between two joint axes)
+a2, a3 = sp.Symbol('a2 a3')  
+
+# d3, d4 : Link Offset (distance from the origins of Frame in direction of z-axis)
+d3, d4 = sp.symbols('d3 d4')  
 
 # Rotation Matrix : z-axis
 def RotZ(a) :
@@ -34,3 +37,16 @@ def D_q(a1, a2, a3) :
                        [0, 1, 0, a2],
                        [0, 0, 1, a3],
                        [0, 0, 0, 1] ] )
+
+Trans_0to1 = RotZ(theta1)
+Trans_1to2 = RotX(conv2Rad(-90))*RotZ(theta2)
+Trans_2to3 = D_q(a2,0,0)*D_q(0,0,d3)*RotZ(theta3)
+Trans_3to4 = RotX(conv2Rad(-90))*D_q(a3,0,0)*D_q(0,0,d4)*RotZ(theta4)
+Trans_4to5 = RotX(conv2Rad(90))*RotZ(theta5)
+Trans_5to6 = RotX(conv2Rad(-90))*RotZ(theta6)
+
+Trans_0to2 = sp.simplify(Trans_0to1*Trans_1to2)
+Trans_0to3 = sp.simplify(Trans_0to2*Trans_2to3)
+Trans_0to4 = sp.simplify(Trans_0to3*Trans_3to4)
+Trans_0to5 = sp.simplify(Trans_0to4*Trans_4to5)
+Trans_0to6 = sp.simplify(Trans_0to5*Trans_5to6)
