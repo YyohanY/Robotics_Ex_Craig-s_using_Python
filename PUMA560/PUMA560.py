@@ -116,7 +116,7 @@ fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 plt.subplots_adjust(bottom=0.25)
 
-th1Angle = plt.axes([0.125, 0.16, 0.34, 0.03], axisbg=axcolor)
+th1Angle = plt.axes([0.125, 0.16, 0.34, 0.03], axisbg=axcolor) # Error : axisbg
 th2Angle = plt.axes([0.125, 0.10, 0.34, 0.03], axisbg=axcolor)
 th3Angle = plt.axes([0.125, 0.04, 0.34, 0.03], axisbg=axcolor)
 th4Angle = plt.axes([0.55, 0.16, 0.34, 0.03], axisbg=axcolor)
