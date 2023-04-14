@@ -116,12 +116,12 @@ fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 plt.subplots_adjust(bottom=0.25)
 
-th1Angle = plt.axes([0.125, 0.16, 0.34, 0.03], axisbg=axcolor) # Error : axisbg
-th2Angle = plt.axes([0.125, 0.10, 0.34, 0.03], axisbg=axcolor)
-th3Angle = plt.axes([0.125, 0.04, 0.34, 0.03], axisbg=axcolor)
-th4Angle = plt.axes([0.55, 0.16, 0.34, 0.03], axisbg=axcolor)
-th5Angle = plt.axes([0.55, 0.10, 0.34, 0.03], axisbg=axcolor)
-th6Angle = plt.axes([0.55, 0.04, 0.34, 0.03], axisbg=axcolor)
+th1Angle = plt.axes([0.125, 0.16, 0.34, 0.03], facecolor=axcolor) # Error : axisbg
+th2Angle = plt.axes([0.125, 0.10, 0.34, 0.03], facecolor=axcolor)
+th3Angle = plt.axes([0.125, 0.04, 0.34, 0.03], facecolor=axcolor)
+th4Angle = plt.axes([0.55, 0.16, 0.34, 0.03], facecolor=axcolor)
+th5Angle = plt.axes([0.55, 0.10, 0.34, 0.03], facecolor=axcolor)
+th6Angle = plt.axes([0.55, 0.04, 0.34, 0.03], facecolor=axcolor)
 
 s1Angle = Slider(th1Angle, r'$ \theta_1 $', -180.0, 180.0, valinit=th1Init)
 s2Angle = Slider(th2Angle, r'$ \theta_2 $', -180.0, 180.0, valinit=th2Init)
