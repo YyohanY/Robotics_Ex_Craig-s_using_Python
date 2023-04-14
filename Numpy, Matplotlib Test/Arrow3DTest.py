@@ -4,7 +4,6 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.patches import FancyArrowPatch
 from mpl_toolkits.mplot3d import proj3d
 
-# 
 class Arrow3D(FancyArrowPatch):
     def __init__(self, xs, ys, zs, *args, **kwargs):
         super().__init__((0,0), (0,0), *args, **kwargs)
@@ -17,3 +16,10 @@ class Arrow3D(FancyArrowPatch):
 
         return np.min(zs)
 
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+arrow_prop_dict = dict(mutation_scale=20, arrowstyle='-|>', color='k', shrinkA=0, shrinkB=0)
+a = Arrow3D([0, 10], [0, 0], [0, 0], **arrow_prop_dict)
+ax.add_artist(a)
+
+plt.show()

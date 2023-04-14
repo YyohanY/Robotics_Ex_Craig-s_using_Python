@@ -2,9 +2,7 @@
 
 import matplotlib.pyplot as plt
 import drawRobotics as dR
-import PUMA560_DHNot_n_Matrix as DH
 import numpy as np
-import sympy as sp
 from matplotlib.widgets import Slider
 
 axcolor = 'lightgoldenrodyellow'
@@ -26,16 +24,16 @@ ORG_0 = np.array([[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]])
 
 # Rotation Matrix : z-axis
 def RotZ(a):
-    return np.array( [  [sp.cos(a), -sp.sin(a), 0, 0], # "np.cos" -> "sp.cos"
-                        [sp.sin(a), sp.cos(a), 0, 0], 
+    return np.array( [  [np.cos(a), -np.sin(a), 0, 0], # "np.cos" -> "np.cos"
+                        [np.sin(a), np.cos(a), 0, 0], 
                         [0, 0, 1, 0],
                         [0, 0, 0, 1] ] )
 
 # Rotation Matrix : x-axis
 def RotX(a):
     return np.array( [  [1, 0, 0, 0], 
-                        [0, sp.cos(a), -sp.sin(a), 0],  # "np.cos" -> "sp.cos"
-                        [0, sp.sin(a), sp.cos(a), 0],
+                        [0, np.cos(a), -np.sin(a), 0],  # "np.cos" -> "np.cos"
+                        [0, np.sin(a), np.cos(a), 0],
                         [0, 0, 0, 1] ] )
 
 # Translation 3-D, dq1~3 : Link Offset
@@ -47,19 +45,19 @@ def D_q(dq1,dq2,dq3):
 
 # Calculate coordinate transformation
 def calcORGs(q1, q2, q3, q4, q5, q6):
-    th1 = DH.conv2Rad(q1)  # "dR.conv2Rad()"" -> "DH.conv2Rad()""
-    th2 = DH.conv2Rad(q2)
-    th3 = DH.conv2Rad(q3)
-    th4 = DH.conv2Rad(q4)
-    th5 = DH.conv2Rad(q5)
-    th6 = DH.conv2Rad(q6)
+    th1 = dR.conv2Rad(q1)  # "dR.conv2Rad()"" -> "dR.conv2Rad()""
+    th2 = dR.conv2Rad(q2)
+    th3 = dR.conv2Rad(q3)
+    th4 = dR.conv2Rad(q4)
+    th5 = dR.conv2Rad(q5)
+    th6 = dR.conv2Rad(q6)
 
     Trans_0to1 = RotZ(th1)
-    Trans_1to2 = np.dot(RotX(DH.conv2Rad(-90)), RotZ(th2))
+    Trans_1to2 = np.dot(RotX(dR.conv2Rad(-90)), RotZ(th2))
     Trans_2to3 = np.dot(np.dot(D_q(a2,0,0), D_q(0,0,d3)), RotZ(th3))
-    Trans_3to4 = np.dot(np.dot(np.dot(RotX(DH.conv2Rad(-90)), D_q(a3,0,0)), D_q(0,0,d4)), RotZ(th4))
-    Trans_4to5 = np.dot(RotX(DH.conv2Rad(90)), RotZ(th5))
-    Trans_5to6 = np.dot(RotX(DH.conv2Rad(-90)), RotZ(th6))
+    Trans_3to4 = np.dot(np.dot(np.dot(RotX(dR.conv2Rad(-90)), D_q(a3,0,0)), D_q(0,0,d4)), RotZ(th4))
+    Trans_4to5 = np.dot(RotX(dR.conv2Rad(90)), RotZ(th5))
+    Trans_5to6 = np.dot(RotX(dR.conv2Rad(-90)), RotZ(th6))
 
     Trans_0to2 = np.dot(Trans_0to1, Trans_1to2)
     Trans_0to3 = np.dot(Trans_0to2, Trans_2to3)
